@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Access Unlocked — Transform Vault</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  /* ============================================================
+     CONFIG — edit these two lines with your real file links
+     ============================================================ */
+</style>
+
+<style>
+  :root{
+    --bg: #080b14;
+    --panel: #0e1424;
+    --panel-2: #121933;
+    --grid-line: #1c2540;
+    --border: #232d4d;
+    --text: #e9edf7;
+    --muted: #7c88ab;
+    --blue: #4f8dfd;
+    --blue-dim: #2c4d94;
+    --green: #34d399;
+    --brass: #f2b134;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+
+  body{
+    background:
+      radial-gradient(circle at 15% 0%, rgba(79,141,253,0.10), transparent 45%),
+      radial-gradient(circle at 85% 100%, rgba(52,211,153,0.06), transparent 40%),
+      var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 20px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* faint blueprint grid */
+  body::before{
+    content:"";
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 42px 42px;
+    opacity: 0.28;
+    mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 72%);
+    pointer-events: none;
+  }
+
+  .wrap{
+    width: 100%;
+    max-width: 620px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ---------- header readout ---------- */
+  .eyebrow-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom: 28px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .eyebrow-row .brand{
+    color: var(--blue);
+    font-weight: 600;
+  }
+  .status-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: rgba(52,211,153,0.06);
+  }
+  .status-dot{
+    width:7px; height:7px; border-radius:50%;
+    background: var(--green);
+    box-shadow: 0 0 0 0 rgba(52,211,153,0.6);
+    animation: pulse 2.2s ease-out infinite;
+  }
+  @keyframes pulse{
+    0%   { box-shadow: 0 0 0 0 rgba(52,211,153,0.55); }
+    70%  { box-shadow: 0 0 0 7px rgba(52,211,153,0); }
+    100% { box-shadow: 0 0 0 0 rgba(52,211,153,0); }
+  }
+
+  /* ---------- main console card ---------- */
+  .console{
+    position: relative;
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px 36px 32px;
+  }
+  .corner{
+    position:absolute; width:16px; height:16px;
+    border-color: var(--blue-dim);
+    opacity: 0.85;
+  }
+  .corner.tl{ top:-1px; left:-1px; border-top:2px solid; border-left:2px solid; border-top-left-radius: 6px;}
+  .corner.tr{ top:-1px; right:-1px; border-top:2px solid; border-right:2px solid; border-top-right-radius: 6px;}
+  .corner.bl{ bottom:-1px; left:-1px; border-bottom:2px solid; border-left:2px solid; border-bottom-left-radius: 6px;}
+  .corner.br{ bottom:-1px; right:-1px; border-bottom:2px solid; border-right:2px solid; border-bottom-right-radius: 6px;}
+
+  h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1.15;
+    margin: 0 0 12px 0;
+    letter-spacing: -0.01em;
+  }
+  h1 .accent{ color: var(--blue); }
+
+  .lede{
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.65;
+    margin: 0 0 30px 0;
+    max-width: 46ch;
+  }
+  .lede strong{ color: var(--text); font-weight: 600; }
+
+  .section-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 14px 0;
+    display:flex; align-items:center; gap:10px;
+  }
+  .section-label::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background: var(--grid-line);
+  }
+
+  /* ---------- download modules ---------- */
+  .modules{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-bottom: 30px;
+  }
+
+  .module{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    text-decoration:none;
+    color: inherit;
+    transition: border-color .18s ease, background .18s ease, transform .18s ease;
+  }
+  .module:hover{
+    border-color: var(--blue-dim);
+    background: rgba(79,141,253,0.06);
+    transform: translateY(-1px);
+  }
+  .module:focus-visible{
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
+
+  .module-icon{
+    flex-shrink:0;
+    width:40px; height:40px;
+    border-radius:7px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .module-icon svg{ width:18px; height:18px; }
+
+  .module-body{ flex:1; min-width:0; }
+  .module-title{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 15.5px;
+    margin-bottom: 2px;
+  }
+  .module-meta{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--muted);
+    letter-spacing: 0.3px;
+  }
+
+  .module-cta{
+    flex-shrink:0;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--blue);
+    display:flex; align-items:center; gap:6px;
+    white-space:nowrap;
+  }
+  .module-cta svg{ width:13px; height:13px; transition: transform .18s ease; }
+  .module:hover .module-cta svg{ transform: translateX(2px); }
+
+  /* ---------- next steps ---------- */
+  .steps{
+    list-style:none;
+    margin:0 0 26px 0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .steps li{
+    display:flex;
+    gap:12px;
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height:1.55;
+  }
+  .steps li strong{ color: var(--text); font-weight:600; }
+  .step-marker{
+    flex-shrink:0;
+    width:18px; height:18px;
+    margin-top:1px;
+    border-radius:4px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--brass);
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10px;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .divider{
+    height:1px;
+    background: var(--grid-line);
+    margin: 26px 0 22px 0;
+  }
+
+  .support{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .support a{
+    color: var(--text);
+    text-decoration:none;
+    border-bottom: 1px solid var(--border);
+    padding-bottom:1px;
+  }
+  .support a:hover{ border-color: var(--blue); color: var(--blue); }
+
+  .footprint{
+    text-align:center;
+    margin-top: 26px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.6px;
+    color: #3a4368;
+  }
+
+  @media (max-width: 480px){
+    .console{ padding: 30px 22px 26px; }
+    h1{ font-size: 27px; }
+    .module{ padding:14px; gap:12px; }
+    .module-cta span{ display:none; }
+    .support{ flex-direction:column; align-items:flex-start; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .status-dot{ animation: none; }
+    .module{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="eyebrow-row">
+    <span class="brand">Transform Vault</span>
+    <span class="status-chip"><span class="status-dot"></span>Payment confirmed</span>
+  </div>
+
+  <div class="console">
+    <span class="corner tl"></span>
+    <span class="corner tr"></span>
+    <span class="corner bl"></span>
+    <span class="corner br"></span>
+
+    <h1>Access <span class="accent">Unlocked.</span></h1>
+    <p class="lede">Thank you for picking up the <strong>AI Transformation Video Masterclass</strong>. Both prompt guides are ready below — grab whichever language works for you.</p>
+
+    <p class="section-label">Download your files</p>
+
+    <div class="modules">
+
+      <!-- ============================================================
+           EDIT THESE TWO href VALUES with your real Google Drive links
+           ============================================================ -->
+      <a class="module" href="https://drive.google.com/file/d/1qRNM5iRe_089qS4iF_HevvSlk0ngolnM/view?usp=sharing" target="_blank" rel="noopener">
+        <span class="module-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#4f8dfd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        </span>
+        <span class="module-body">
+          <span class="module-title">English Guide</span>
+          <span class="module-meta">PDF · PROMPT SYSTEM · EN</span>
+        </span>
+        <span class="module-cta">DOWNLOAD <span>PDF</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </span>
+      </a>
+
+      <a class="module" href="https://drive.google.com/file/d/10cdOje0zB8mFOnT_Oecq63AtUQFkh7nM/view?usp=sharing" target="_blank" rel="noopener">
+        <span class="module-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#4f8dfd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        </span>
+        <span class="module-body">
+          <span class="module-title">हिंदी गाइड</span>
+          <span class="module-meta">PDF · PROMPT SYSTEM · HI</span>
+        </span>
+        <span class="module-cta">DOWNLOAD <span>PDF</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </span>
+      </a>
+
+    </div>
+
+    <p class="section-label">What to do next</p>
+    <ul class="steps">
+      <li><span class="step-marker">1</span><span>Open the PDF and read the <strong>Placeholder Guide</strong> before touching any prompt.</span></li>
+      <li><span class="step-marker">2</span><span>Generate your Start &amp; End images first — get those looking right before touching video.</span></li>
+      <li><span class="step-marker">3</span><span>Run the Video Prompt in Google Flow, Gemini, or Kling, then finish the edit in CapCut.</span></li>
+    </ul>
+
+    <div class="divider"></div>
+
+    <div class="support">
+      <span>Questions about the guide?</span>
+      <a href="mailto:transformvault007@gmail.com" target="_blank" rel="noopener">Email us →</a>
+    </div>
+  </div>
+
+  <p class="footprint">TRANSFORM VAULT · DIGITAL PRODUCT · DELIVERED INSTANTLY</p>
+
+</div>
+
+</body>
+</html>
